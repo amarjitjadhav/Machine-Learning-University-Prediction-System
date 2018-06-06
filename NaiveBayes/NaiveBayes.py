@@ -1,9 +1,7 @@
 import numpy as np
-from sklearn import preprocessing
-from sklearn.model_selection import train_test_split
+
 import pandas
-import math
-from sklearn import metrics
+
 from sklearn.naive_bayes import GaussianNB
 
 
