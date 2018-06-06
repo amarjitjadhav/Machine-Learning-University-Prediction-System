@@ -1,5 +1,5 @@
 import numpy as np
-
+import scipy
 import pandas
 
 from sklearn.naive_bayes import GaussianNB
@@ -7,7 +7,7 @@ from sklearn.naive_bayes import GaussianNB
 
 class project(object):
     def loadData(self):
-        iData = pandas.read_csv('NaiveByes/ASU1.csv')
+        iData = pandas.read_csv('ASU1.csv')
         data = pandas.DataFrame(data=iData)
         # data = preprocessing.scale(iData[:, 0:-1])
         data1 = data.ix[:, [4, 7, 8, 9, 10, 11, 13, 14, 18]]
@@ -19,7 +19,7 @@ class project(object):
         trainingData = data1.ix[:, 1:9]
         # trainingData.ix[:,7] = preprocessing.scale(trainingData.ix[:,7])
 
-        test = pandas.read_csv('NaiveByes/test.csv')
+        test = pandas.read_csv('test.csv')
         testingData = pandas.DataFrame(data=test)
 
         return trainingData, label, testingData
