@@ -6,8 +6,8 @@ from sklearn.naive_bayes import GaussianNB
 
 
 class project(object):
-    def loadData(self):
-        iData = pandas.read_csv('ASU1.csv')
+    def loadData(self, iData):
+        # iData = pandas.read_csv('ASU1.csv')
         data = pandas.DataFrame(data=iData)
         # data = preprocessing.scale(iData[:, 0:-1])
         data1 = data.ix[:, [4, 7, 8, 9, 10, 11, 13, 14, 18]]
@@ -30,8 +30,8 @@ class project(object):
         gnb = GaussianNB()
         gnb.fit(trainingData.values, label)
         y_pred = gnb.predict(testingData)
-
-        print(y_pred)
+        return y_pred
+        # print(y_pred)
 
 
 # end calGNB
@@ -40,11 +40,13 @@ class project(object):
 
 def main():
     object1 = project()
-
-    trainingData, label, testingData = object1.loadData()
-
-    object1.calGNB(trainingData, label, testingData)
-
+    list = ["ASU1.csv", "clemson.csv", "IIT-chicago.csv", "MTU.csv"]
+    list_len = len(list)
+    for i in list:
+        iData = pandas.read_csv(i)
+        trainingData, label, testingData = object1.loadData(iData)
+        y_pred = object1.calGNB(trainingData, label, testingData)
+        print(y_pred)
 
 # end main
 
