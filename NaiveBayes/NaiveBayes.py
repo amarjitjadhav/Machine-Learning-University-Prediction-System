@@ -1,52 +1,96 @@
 import numpy as np
-import scipy
 import pandas
-
+from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import GaussianNB
 
 
 class project(object):
-    def loadData(self, iData):
-        # iData = pandas.read_csv('ASU1.csv')
+
+    def loadData(self, trainD, testD):
+        iData = pandas.read_csv(trainD)
         data = pandas.DataFrame(data=iData)
-        # data = preprocessing.scale(iData[:, 0:-1])
+
+        # Fetch Uuniversity name
+        uni_Name = data.ix[0, 2]
+
+        # Select features that are important to model
         data1 = data.ix[:, [4, 7, 8, 9, 10, 11, 13, 14, 18]]
 
-        label = data1.ix[:, [0]]
+        # create tarining Label
+        trainingLabel = data1.ix[:, 0]
+        trainingLabel = np.where(trainingLabel == "Accept", 1, 0)
 
-        label["Result"] = np.where(label["Result"] == "Accept", 1, 0)
-
+        # create training data
         trainingData = data1.ix[:, 1:9]
-        # trainingData.ix[:,7] = preprocessing.scale(trainingData.ix[:,7])
 
-        test = pandas.read_csv('test.csv')
+        test = pandas.read_csv(testD)
         testingData = pandas.DataFrame(data=test)
 
-        return trainingData, label, testingData
+        # create testing Label
+        testLabel = test.ix[:, 0]
+        testLabel = np.where(testLabel == "Accept", 1, 0)
+
+        # create testing data
+        testData = test.ix[:, 1:9]
+
+        # Calculate prediction and probability
+        predictions, probability = self.calGNB(trainingData, trainingLabel, testData)
+
+        # confusionMatrix = metrics.confusion_matrix(testLabel, predictions)
+        # print("Confusion matrix:")
+        # print(confusionMatrix)
+
+        # Calculate accuracy
+        result = accuracy_score(testLabel, predictions)
+
+        return result, uni_Name
 
     # end loadData
 
-    def calGNB(self, trainingData, label, testingData):
+    def calGNB(self, trainingData, label, testData):
+        # feed data to gaussian classifier
         gnb = GaussianNB()
         gnb.fit(trainingData.values, label)
-        y_pred = gnb.predict(testingData)
-        return y_pred
-        # print(y_pred)
+
+        # gives result in either 0 or 1
+        y_result = gnb.predict(testData)
+
+        # gives result in probability
+        y_prob = gnb.predict_proba(testData)
+
+        return y_result, y_prob[:, 1]
 
 
 # end calGNB
 
 # end class project
 
+
 def main():
     object1 = project()
-    list = ["ASU1.csv", "clemson.csv", "IIT-chicago.csv", "MTU.csv"]
-    list_len = len(list)
-    for i in list:
-        iData = pandas.read_csv(i)
-        trainingData, label, testingData = object1.loadData(iData)
-        y_pred = object1.calGNB(trainingData, label, testingData)
-        print(y_pred)
+
+    university_Names = []
+    accuracy_score = []
+
+    # list of training csv files
+    training_List = ['ASU1.csv', 'clemson.csv', 'IIT-chicago.csv', 'MTU.csv']
+    # list of testing csv files
+    testinig_List = ['TestData_ASU.csv', 'TestData_clemson.csv', 'IITC_Test.csv', 'TestData_MTU.csv']
+
+    # get results for each university data
+    for trainD, testD in zip(training_List, testinig_List):
+        result, uni_Name = object1.loadData(trainD, testD)
+        accuracy_score.append(result * 100)
+        university_Names.append(uni_Name)
+    # end for
+
+    print("University predictions for student:")
+    for uni, accuracy in zip(university_Names, accuracy_score):
+        print(str(uni) + " -> " + str(accuracy) + "%")
+        print("")
+
+
+# end for
 
 # end main
 
