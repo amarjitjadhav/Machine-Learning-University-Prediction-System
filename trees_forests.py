@@ -5,8 +5,8 @@ from sklearn.tree import DecisionTreeClassifier
 
 
 def get_data(train_file, test_file):
-    train_data = pd.read_csv('../data/train/' + train_file)
-    test_data = pd.read_csv('../data/test/' + test_file)
+    train_data = pd.read_csv('data/train/' + train_file)
+    test_data = pd.read_csv('data/test/' + test_file)
     uni = train_data['UniversityApplied'][0]
     X_train = train_data[['GRE', 'GRE-V', 'GRE (Quants)', 'AWA', 'TOEFL',
                           'Work-Ex', 'International Papers', 'Percentage']]
