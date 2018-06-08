@@ -1,64 +1,57 @@
 import numpy as np
-import pandas
+import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import GaussianNB
 
 
-class project(object):
+class Model(object):
 
     def loadData(self, trainD, testD):
-        iData = pandas.read_csv(trainD)
-        data = pandas.DataFrame(data=iData)
+        train_data = pd.read_csv('../data/train/' + trainD)
+        test_data = pd.read_csv('../data/test/' + testD)
 
-        # Fetch Uuniversity name
-        uni_Name = data.ix[0, 2]
+        # Fetch university name
+        uni_name = train_data['UniversityApplied'][0]
 
         # Select features that are important to model
-        data1 = data.ix[:, [4, 7, 8, 9, 10, 11, 13, 14, 18]]
+        X_train = train_data[['GRE', 'GRE-V', 'GRE (Quants)', 'AWA', 'TOEFL',
+                              'Work-Ex', 'International Papers', 'Percentage']]
 
-        # create tarining Label
-        trainingLabel = data1.ix[:, 0]
-        trainingLabel = np.where(trainingLabel == "Accept", 1, 0)
-
-        # create training data
-        trainingData = data1.ix[:, 1:9]
-
-        test = pandas.read_csv(testD)
-        testingData = pandas.DataFrame(data=test)
-
-        # create testing Label
-        testLabel = test.ix[:, 0]
-        testLabel = np.where(testLabel == "Accept", 1, 0)
+        # create training Label
+        y_train = pd.get_dummies(train_data['Result'])['Accept']
 
         # create testing data
-        testData = test.ix[:, 1:9]
+        X_test = test_data.drop(['Result'], axis=1)
 
-        # Calculate prediction and probability
-        predictions, probability = self.calGNB(trainingData, trainingLabel, testData)
+        # create testing Label
+        y_test = pd.get_dummies(test_data['Result'])['Accept']
 
-        # confusionMatrix = metrics.confusion_matrix(testLabel, predictions)
-        # print("Confusion matrix:")
+        # Calculate prediction
+        predictions, _ = self.calGNB(X_train, y_train, X_test)
+
+        # confusionMatrix = metrics.confusion_matrix(y_test, predictions)
+        # print('Confusion matrix:')
         # print(confusionMatrix)
 
         # Calculate accuracy
-        result = accuracy_score(testLabel, predictions)
+        result = accuracy_score(y_test, predictions)
 
-        return result, uni_Name
+        return result, uni_name
 
     # end loadData
 
-    def calGNB(self, trainingData, label, testData):
+    def calGNB(self, X_train, y_train, X_test):
         # feed data to gaussian classifier
         gnb = GaussianNB()
-        gnb.fit(trainingData.values, label)
+        gnb.fit(X_train, y_train)
 
         # gives result in either 0 or 1
-        y_result = gnb.predict(testData)
+        predictions = gnb.predict(X_test)
 
         # gives result in probability
-        y_prob = gnb.predict_proba(testData)
+        y_probs = gnb.predict_proba(X_test)
 
-        return y_result, y_prob[:, 1]
+        return predictions, y_probs[:,1]
 
 
 # end calGNB
@@ -67,27 +60,27 @@ class project(object):
 
 
 def main():
-    object1 = project()
+    model = Model()
 
-    university_Names = []
+    university_names = []
     accuracy_score = []
 
     # list of training csv files
-    training_List = ['ASU1.csv', 'clemson.csv', 'IIT-chicago.csv', 'MTU.csv']
+    training_List = ['asu.csv', 'clemson.csv', 'iitc.csv', 'mtu.csv']
     # list of testing csv files
-    testinig_List = ['TestData_ASU.csv', 'TestData_clemson.csv', 'IITC_Test.csv', 'TestData_MTU.csv']
+    testing_list = ['asu_test.csv', 'clemson_test.csv',
+                    'iitc_test.csv', 'mtu_test.csv']
 
     # get results for each university data
-    for trainD, testD in zip(training_List, testinig_List):
-        result, uni_Name = object1.loadData(trainD, testD)
+    for trainD, testD in zip(training_List, testing_list):
+        result, uni_name = model.loadData(trainD, testD)
         accuracy_score.append(result * 100)
-        university_Names.append(uni_Name)
+        university_names.append(uni_name)
     # end for
 
-    print("University predictions for student:")
-    for uni, accuracy in zip(university_Names, accuracy_score):
-        print(str(uni) + " -> " + str(accuracy) + "%")
-        print("")
+    print('University predictions for student:')
+    for uni, accuracy in zip(university_names, accuracy_score):
+        print(uni + ' -> ' + str(accuracy) + '%\n')
 
 
 # end for
