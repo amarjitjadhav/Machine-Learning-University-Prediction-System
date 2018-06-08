@@ -7,8 +7,7 @@ from sklearn.naive_bayes import GaussianNB
 class project(object):
 
     def loadData(self, trainD, testD):
-        iData = pandas.read_csv('../data/train/'+trainD)
-        data = pandas.DataFrame(data=iData)
+        data = pandas.read_csv('../data/train/'+trainD)
 
         # Fetch Uuniversity name
         uni_Name = data.ix[0, 2]
