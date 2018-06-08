@@ -36,7 +36,7 @@ def classifier(clf, train_List, test_list):
     for _ in range(10):
         acc = clf.score(all_X_test, all_y_test)
         accuracies.append(acc)
-    print('All universities together: ', 
+    print('All universities together: ',
           str(round(np.mean(acc)*100, 2)), '% accuracy', sep='')
 
 
