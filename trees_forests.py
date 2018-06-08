@@ -12,22 +12,24 @@ def classifier(clf, train_list, test_list):
     all_X_test, all_y_test = pd.DataFrame(), pd.Series()
     for files in zip(train_list, test_list):
         uni, X_train, y_train, X_test, y_test = train_test_split(*files)
-        clf.fit(X_train, y_train)
         for _ in range(10):
+            clf.fit(X_train, y_train)
             acc = clf.score(X_test, y_test)
             accuracies.append(acc)
-        print(uni, ': ', str(round(np.mean(acc)*100, 2)), '% accuracy', sep='')
+        avg_acc = np.mean(accuracies)*100
+        print(uni, ': ', str(round(avg_acc, 2)), '% accuracy', sep='')
         all_X_train = all_X_train.append(X_train)
         all_y_train = all_y_train.append(y_train)
         all_X_test = all_X_test.append(X_test)
         all_y_test = all_y_test.append(y_test)
     accuracies = []
-    clf.fit(all_X_train, all_y_train)
     for _ in range(10):
+        clf.fit(all_X_train, all_y_train)
         acc = clf.score(all_X_test, all_y_test)
         accuracies.append(acc)
+    avg_acc = np.mean(accuracies)*100
     print('All universities together: ',
-          str(round(np.mean(acc)*100, 2)), '% accuracy', sep='')
+          str(round(avg_acc, 2)), '% accuracy', sep='')
 
 
 def main():
