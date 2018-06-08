@@ -7,7 +7,7 @@ from sklearn.naive_bayes import GaussianNB
 class project(object):
 
     def loadData(self, trainD, testD):
-        iData = pandas.read_csv(trainD)
+        iData = pandas.read_csv('../data/train/'+trainD)
         data = pandas.DataFrame(data=iData)
 
         # Fetch Uuniversity name
@@ -23,7 +23,7 @@ class project(object):
         # create training data
         trainingData = data1.ix[:, 1:9]
 
-        test = pandas.read_csv(testD)
+        test = pandas.read_csv('../data/test/'+testD)
         testingData = pandas.DataFrame(data=test)
 
         # create testing Label
@@ -73,9 +73,9 @@ def main():
     accuracy_score = []
 
     # list of training csv files
-    training_List = ['ASU1.csv', 'clemson.csv', 'IIT-chicago.csv', 'MTU.csv']
+    training_List = ['asu.csv', 'clemson.csv', 'iitc.csv', 'mtu.csv']
     # list of testing csv files
-    testinig_List = ['TestData_ASU.csv', 'TestData_clemson.csv', 'IITC_Test.csv', 'TestData_MTU.csv']
+    testinig_List = ['asu_test.csv', 'clemson_test.csv', 'iitc_test.csv', 'mtu_test.csv']
 
     # get results for each university data
     for trainD, testD in zip(training_List, testinig_List):
