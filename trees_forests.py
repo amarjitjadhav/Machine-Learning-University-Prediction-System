@@ -11,7 +11,7 @@ def classifier(clf, train_list, test_list):
     all_X_train, all_y_train = pd.DataFrame(), pd.Series()
     all_X_test, all_y_test = pd.DataFrame(), pd.Series()
     for files in zip(train_list, test_list):
-        uni, X_train, y_train, X_test, y_test = train_test_split(*files)
+        uni, X_train, X_test, y_train, y_test = train_test_split(*files)
         for _ in range(10):
             clf.fit(X_train, y_train)
             acc = clf.score(X_test, y_test)

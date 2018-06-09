@@ -10,4 +10,4 @@ def train_test_split(train_file, test_file):
     y_train = pd.get_dummies(train_data['Result'])['Accept']
     X_test = test_data.drop(['Result'], axis=1)
     y_test = pd.get_dummies(test_data['Result'])['Accept']
-    return uni, X_train, y_train, X_test, y_test
+    return uni, X_train, X_test, y_train, y_test
