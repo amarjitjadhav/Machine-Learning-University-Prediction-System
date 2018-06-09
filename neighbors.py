@@ -1,7 +1,9 @@
 from data_handler import train_test_split
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -35,6 +37,10 @@ def classifier(clf, train_list, test_list):
           str(round(avg_acc, 2)), '% accuracy; ', sep='', end='')
     print('Best k value:', clf.best_params_['n_neighbors'], end='; ')
     print('Best weights parameter:', clf.best_params_['weights'])
+    all_y_train.rename('Accept', inplace=True)
+    df = pd.concat((all_X_train, all_y_train), axis=1)
+    sns.heatmap(df.corr(), cmap='plasma', annot=True)
+    plt.show()
 
 
 def main():
